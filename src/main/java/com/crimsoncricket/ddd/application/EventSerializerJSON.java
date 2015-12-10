@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2015 Martijn van der Woud - The Crimson Cricket Internet Services
  *
@@ -16,24 +15,26 @@
  *
  */
 
-package com.crimsoncricket.ddd.port.adapter.hibernate;
+package com.crimsoncricket.ddd.application;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-import java.sql.Time;
-import java.time.LocalTime;
+import com.crimsoncricket.ddd.application.EventSerializer;
+import com.crimsoncricket.ddd.domain.model.DomainEvent;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-@Converter(autoApply = true)
-public class LocalTimeConverter implements AttributeConverter<LocalTime, Time> {
+import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
+public class EventSerializerJSON implements EventSerializer {
 
-    @Override
-    public Time convertToDatabaseColumn(LocalTime attribute) {
-        return Time.valueOf(attribute);
+    private Gson gson;
+
+    public EventSerializerJSON() {
+        this.gson = new GsonBuilder().create();
     }
 
     @Override
-    public LocalTime convertToEntityAttribute(Time dbData) {
-        return dbData.toLocalTime();
+    public String serialize(DomainEvent anEvent) {
+        assertArgumentNotNull(anEvent, "The domain event may not be null.");
+        return gson.toJson(anEvent);
     }
 }
