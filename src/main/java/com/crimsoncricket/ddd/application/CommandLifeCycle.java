@@ -22,26 +22,34 @@ import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import com.crimsoncricket.ddd.domain.model.DomainEventPublisher;
 import com.crimsoncricket.ddd.domain.model.DomainEventSubscriber;
 
-import static com.crimsoncricket.asserts.Assert.assertStateNotNull;
+import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class CommandLifeCycle {
 
     private EventStore eventStore;
     private PersistenceLifeCycle persistenceLifeCycle;
 
+    public CommandLifeCycle(EventStore eventStore, PersistenceLifeCycle persistenceLifeCycle) {
+        setEventStore(eventStore);
+        setPersistenceLifecycle(persistenceLifeCycle);
+    }
+
+    private void setPersistenceLifecycle(PersistenceLifeCycle persistenceLifeCycle) {
+        assertArgumentNotNull(persistenceLifeCycle, "Persistence lifecycle may not be null");
+        this.persistenceLifeCycle = persistenceLifeCycle;
+    }
+
+    private void setEventStore(EventStore eventStore) {
+        assertArgumentNotNull(eventStore, "Event store may not be null");
+        this.eventStore = eventStore;
+    }
+
     public void start() {
-
-        ensureThatEventStoreIsConfigured();
-        ensureThatPersistenceLifeCycleIsConfigured();
-
         domainEventPublisher().reset();
         ensureThatAllPublishedEventsAreStored();
         persistenceLifeCycle.begin();
     }
 
-    private void ensureThatEventStoreIsConfigured() {
-        assertStateNotNull(eventStore, "An event store must be configured for the application service lifecycle.");
-    }
 
 
     private void ensureThatAllPublishedEventsAreStored() {
@@ -64,23 +72,10 @@ public class CommandLifeCycle {
     }
 
     public void failure() {
-        ensureThatPersistenceLifeCycleIsConfigured();
         persistenceLifeCycle.rollback();
     }
 
-    private void ensureThatPersistenceLifeCycleIsConfigured() {
-        assertStateNotNull(
-                persistenceLifeCycle,
-                "A persistence lifecycle must be configured for the application service lifecycle.");
-    }
 
-    public void setEventStore(EventStore eventStore) {
-        this.eventStore = eventStore;
-    }
-
-    public void setPersistenceLifeCycle(PersistenceLifeCycle persistenceLifeCycle) {
-        this.persistenceLifeCycle = persistenceLifeCycle;
-    }
 
 
 }

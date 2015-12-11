@@ -64,8 +64,7 @@ public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
 
     @Override
     public void rollback() {
-       transactionManager.rollback(transactionStatusHolder.get());
-        logger.debug("Rolled back JPA transaction");
+        logger.debug("Explicit rollback not necessary. JPA transaction manager performs automatic rollback on exception");
     }
 
 
