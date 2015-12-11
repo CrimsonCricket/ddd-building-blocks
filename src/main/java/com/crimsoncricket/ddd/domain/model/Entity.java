@@ -41,6 +41,14 @@ public abstract class Entity<I extends Id> {
     }
 
 
+    public I id() {
+        return id;
+    }
+
+    public Integer version() {
+        return version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,4 +61,8 @@ public abstract class Entity<I extends Id> {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
+
+
 }
