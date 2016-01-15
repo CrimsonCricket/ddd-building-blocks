@@ -36,7 +36,7 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 public class StoredEvent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventId;
 
     @Column(name = "occurred_on")

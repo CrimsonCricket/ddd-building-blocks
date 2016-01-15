@@ -18,14 +18,19 @@
 
 package com.crimsoncricket.ddd.domain.model;
 
+import com.crimsoncricket.ddd.port.adapter.hibernate.search.IdBridge;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.FieldBridge;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @MappedSuperclass
 public abstract class Entity<I extends Id> {
 
-
     @EmbeddedId
+    @DocumentId
+    @FieldBridge(impl = IdBridge.class)
     @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "id"))
     })
