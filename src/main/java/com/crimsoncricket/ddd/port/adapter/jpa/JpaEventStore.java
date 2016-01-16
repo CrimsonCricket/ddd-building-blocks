@@ -21,7 +21,6 @@ import com.crimsoncricket.ddd.application.EventSerializer;
 import com.crimsoncricket.ddd.application.EventStore;
 import com.crimsoncricket.ddd.application.StoredEvent;
 import com.crimsoncricket.ddd.domain.model.DomainEvent;
-import org.springframework.stereotype.Repository;
 
 
 import javax.persistence.EntityManager;
@@ -29,7 +28,6 @@ import javax.persistence.PersistenceContext;
 
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
-@Repository
 public class JpaEventStore implements EventStore {
 
     @PersistenceContext
