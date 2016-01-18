@@ -18,12 +18,15 @@
 
 package com.crimsoncricket.ddd.domain.model;
 
+import com.crimsoncricket.asserts.Assert;
 import com.crimsoncricket.ddd.port.adapter.hibernate.search.IdBridge;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.FieldBridge;
 
 import javax.persistence.*;
 import java.util.Objects;
+
+import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 @MappedSuperclass
 public abstract class Entity<I extends Id> {
@@ -42,6 +45,7 @@ public abstract class Entity<I extends Id> {
     protected Entity(){};
 
     protected Entity(I id) {
+        assertArgumentNotNull(id, "Id may not be null");
         this.id = id;
     }
 
