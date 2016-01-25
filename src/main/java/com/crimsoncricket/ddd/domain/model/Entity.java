@@ -71,6 +71,14 @@ public abstract class Entity<I extends Id> {
         return Objects.hash(id);
     }
 
+    protected void ensureVersionIs(int expectedVersion) throws OutdatedEntityVersionException {
+        if (version != expectedVersion)
+            throw new OutdatedEntityVersionException(
+                    "Attempted to executed a command on an outdated entity of type " + this.getClass().getSimpleName(),
+                    expectedVersion,
+                    version);
+
+    }
 
 
 
