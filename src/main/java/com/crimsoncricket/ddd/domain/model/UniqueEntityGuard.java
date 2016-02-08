@@ -23,20 +23,17 @@ public abstract class UniqueEntityGuard<T extends Entity> extends DomainService 
     public void ensureNewEntityIsUnique(T newEntity) throws UniqueConstraintViolationException {
         T conflictingEntity = findEntityConflictingWithNew(newEntity);
         if (conflictingEntity != null)
-            throw new UniqueConstraintViolationException(
-                    "Cannot create new entity, because it violates a uniqueness constraint", conflictingEntity);
+            throwConstraintViolationException(conflictingEntity);
 
     }
 
-    public void ensureModifiedEnityIsUnique(T modifiedEnity) throws UniqueConstraintViolationException {
-        T conflictingEntity = findEntityConflictingWithModified(modifiedEnity);
-        if (conflictingEntity != null)
-            throw new UniqueConstraintViolationException(
-                "Entity modification failed, because it violates a uniqueness constraint", conflictingEntity);
-    }
 
     protected abstract T findEntityConflictingWithNew(T newEntity);
 
-    protected abstract T findEntityConflictingWithModified(T modifiedEntity);
+    protected void throwConstraintViolationException(T conflictingEntity) throws UniqueConstraintViolationException {
+        throw new UniqueConstraintViolationException(
+                "Cannot create new entity, because it violates a uniqueness constraint", conflictingEntity);
+    }
+
 
 }
