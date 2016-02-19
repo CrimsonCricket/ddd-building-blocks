@@ -17,16 +17,37 @@
 
 package com.crimsoncricket.ddd.domain.model;
 
-public class UniqueConstraintViolationException extends Exception {
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
-    private AggregateRoot conflictingEntity;
+@MappedSuperclass
+public class AggregateRoot<I extends Id> extends Entity<I> {
 
-    public UniqueConstraintViolationException(String message, AggregateRoot conflictingEntity) {
-        super(message);
-        this.conflictingEntity = conflictingEntity;
+    @Version
+    private Integer version;
+
+
+    protected AggregateRoot() {}
+
+    public AggregateRoot(I id) {
+        super(id);
     }
 
-    public AggregateRoot conflictingEntity() {
-        return conflictingEntity;
+    public Integer version() {
+        return version;
     }
+
+
+    protected void ensureVersionIs(int expectedVersion) throws OutdatedEntityVersionException {
+        if (version != expectedVersion)
+            throw new OutdatedEntityVersionException(
+                    "Attempted to executed a command on an outdated entity of type " + this.getClass().getSimpleName(),
+                    expectedVersion,
+                    version);
+
+    }
+
+
+
+
 }

@@ -18,7 +18,6 @@
 
 package com.crimsoncricket.ddd.domain.model;
 
-import com.crimsoncricket.asserts.Assert;
 import com.crimsoncricket.ddd.port.adapter.hibernate.search.IdBridge;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.FieldBridge;
@@ -39,9 +38,6 @@ public abstract class Entity<I extends Id> {
     })
     private I id;
 
-    @Version
-    private Integer version;
-
     protected Entity(){};
 
     protected Entity(I id) {
@@ -54,9 +50,6 @@ public abstract class Entity<I extends Id> {
         return id;
     }
 
-    public Integer version() {
-        return version;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -69,15 +62,6 @@ public abstract class Entity<I extends Id> {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    protected void ensureVersionIs(int expectedVersion) throws OutdatedEntityVersionException {
-        if (version != expectedVersion)
-            throw new OutdatedEntityVersionException(
-                    "Attempted to executed a command on an outdated entity of type " + this.getClass().getSimpleName(),
-                    expectedVersion,
-                    version);
-
     }
 
 

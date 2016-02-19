@@ -17,7 +17,7 @@
 
 package com.crimsoncricket.ddd.domain.model;
 
-public abstract class UniqueEntityGuard<T extends Entity> extends DomainService {
+public abstract class UniqueEntityGuard<T extends AggregateRoot> extends DomainService {
 
 
     public void ensureNewEntityIsUnique(T newEntity) throws UniqueConstraintViolationException {
