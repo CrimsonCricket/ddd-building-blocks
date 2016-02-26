@@ -41,7 +41,7 @@ public class AggregateRoot<I extends Id> extends Entity<I> {
     protected void ensureVersionIs(int expectedVersion) throws OutdatedEntityVersionException {
         if (version != expectedVersion)
             throw new OutdatedEntityVersionException(
-                    "Attempted to executed a command on an outdated entity of type " + this.getClass().getSimpleName(),
+                    "Attempted to execute a command on an outdated entity of type " + this.getClass().getSimpleName(),
                     expectedVersion,
                     version);
 
