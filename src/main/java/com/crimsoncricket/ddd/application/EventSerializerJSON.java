@@ -37,4 +37,11 @@ public class EventSerializerJSON implements EventSerializer {
         assertArgumentNotNull(anEvent, "The domain event may not be null.");
         return gson.toJson(anEvent);
     }
+
+    @Override
+    public <T extends DomainEvent> T unserialize(String serializedEvent, Class<T> eventClass) {
+        return gson.fromJson(serializedEvent, eventClass);
+    }
+
+
 }

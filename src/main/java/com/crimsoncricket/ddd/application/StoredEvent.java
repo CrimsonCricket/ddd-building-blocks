@@ -17,7 +17,9 @@
 
 package com.crimsoncricket.ddd.application;
 
+import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.common.reflection.ClassLoaderDelegate;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -55,9 +57,20 @@ public class StoredEvent {
         this.eventBody = eventBody;
         this.occurredOn = occurredOn;
         this.typeName = typeName;
-
-
     }
+
+    @SuppressWarnings("unchecked")
+    public SequencedEvent toSequencedEvent(EventSerializer serializer)  {
+        Class<DomainEvent> eventClass = null;
+        try {
+            eventClass = (Class<DomainEvent>) Class.forName(typeName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        DomainEvent event = serializer.unserialize(eventBody, eventClass);
+        return new SequencedEvent(eventId, event);
+    }
+
 
     public Instant occurredOn() {
         return occurredOn;

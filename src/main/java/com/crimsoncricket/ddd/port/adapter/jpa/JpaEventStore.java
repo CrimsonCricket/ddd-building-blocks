@@ -25,6 +25,10 @@ import com.crimsoncricket.ddd.domain.model.DomainEvent;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
@@ -51,6 +55,27 @@ public class JpaEventStore implements EventStore {
         String serializedEvent = eventSerializer.serialize(anEvent);
         return new StoredEvent(anEvent.occurredOn(), anEvent.getClass().getName(), serializedEvent);
     }
+
+
+    @Override
+    public List<StoredEvent> allEventsAfter(Long eventId) {
+        Query query = entityManager
+                .createQuery("from StoredEvent e where e.eventId > :eventId")
+                .setParameter("eventId", eventId);
+
+        List<StoredEvent> eventList = new ArrayList<>();
+        List resultList = query.getResultList();
+        for (Object result : resultList) {
+            if (result instanceof StoredEvent)
+                eventList.add((StoredEvent) result);
+            else
+                throw new RuntimeException("Unexpected result type."); // not gonna happen
+        }
+        return eventList;
+    }
+
+
+
 
 
 }

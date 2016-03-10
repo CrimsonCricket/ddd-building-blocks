@@ -19,7 +19,13 @@ package com.crimsoncricket.ddd.application;
 
 import com.crimsoncricket.ddd.domain.model.DomainEvent;
 
+import java.util.List;
+
 public interface EventStore {
 
     void append(DomainEvent anEvent);
+
+    List<StoredEvent> allEventsAfter(Long eventId);
+
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Martijn van der Woud - The Crimson Cricket Internet Services
+ * Copyright 2016 Martijn van der Woud - The Crimson Cricket Internet Services
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,13 +17,8 @@
 
 package com.crimsoncricket.ddd.application;
 
-import com.crimsoncricket.ddd.domain.model.DomainEvent;
+public interface EventDispatcher {
 
-public interface EventSerializer {
-
-    String serialize(DomainEvent anEvent);
-
-    <T extends DomainEvent> T unserialize(String serializedEvent, Class<T> eventClass);
-
+    void dispatch(SequencedEvent event);
 
 }
