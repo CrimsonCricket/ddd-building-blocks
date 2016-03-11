@@ -29,10 +29,10 @@ public abstract class DomainEventSubscriber<T extends  DomainEvent> {
 
     protected abstract void handleEvent(T aDomainEvent);
 
+    @SuppressWarnings("unchecked")
     public void notify(DomainEvent anEvent) {
         assertArgumentNotNull(anEvent, "The domain event may not be null.");
         if (this.eventType.isAssignableFrom(anEvent.getClass()))
-            //noinspection unchecked
             this.handleEvent((T) anEvent);
     }
 
