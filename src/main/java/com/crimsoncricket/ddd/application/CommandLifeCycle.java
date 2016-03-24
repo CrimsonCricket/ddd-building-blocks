@@ -44,8 +44,8 @@ public class CommandLifeCycle {
     }
 
 
+    @SuppressWarnings("unchecked")
     private void ensureThatAllPublishedEventsAreStored() {
-        //noinspection unchecked
         domainEventPublisher().subscribe(new DomainEventSubscriber(DomainEvent.class) {
             @Override
             protected void handleEvent(DomainEvent aDomainEvent) {

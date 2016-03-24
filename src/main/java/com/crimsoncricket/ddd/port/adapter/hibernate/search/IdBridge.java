@@ -25,6 +25,8 @@ import org.hibernate.search.bridge.TwoWayFieldBridge;
 
 
 public class IdBridge implements TwoWayFieldBridge {
+
+    @SuppressWarnings("unchecked")
     @Override
     public Object get(String name, Document document) {
         String stringValue = document.get(name);
@@ -32,7 +34,6 @@ public class IdBridge implements TwoWayFieldBridge {
         Class idClass = null;
         try {
             idClass = Class.forName(className);
-            //noinspection unchecked
             return idClass.getConstructor(String.class).newInstance(stringValue);
         } catch (Exception e) {
             throw new RuntimeException(e);
