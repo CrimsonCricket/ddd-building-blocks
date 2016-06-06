@@ -22,6 +22,9 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
+import static com.crimsoncricket.asserts.Assert.assertStringArgumentNotEmpty;
+
 @MappedSuperclass
 public abstract class Id implements Serializable {
 
@@ -29,6 +32,8 @@ public abstract class Id implements Serializable {
     protected Id(){}
 
     protected Id(String id) {
+        assertArgumentNotNull(id, "id may not be null");
+        assertStringArgumentNotEmpty(id, "id may not be empty");
         this.id = id;
     }
 
