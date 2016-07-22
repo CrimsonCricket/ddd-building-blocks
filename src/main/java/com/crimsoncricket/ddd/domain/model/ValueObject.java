@@ -17,6 +17,9 @@
 
 package com.crimsoncricket.ddd.domain.model;
 
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class ValueObject {
 
 }

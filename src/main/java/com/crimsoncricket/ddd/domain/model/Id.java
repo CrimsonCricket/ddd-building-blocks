@@ -18,6 +18,7 @@
 package com.crimsoncricket.ddd.domain.model;
 
 
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
@@ -37,6 +38,7 @@ public abstract class Id implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "id")
     private String id;
 
     public String id(){return this.id;}
