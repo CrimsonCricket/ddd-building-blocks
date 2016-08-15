@@ -4,9 +4,12 @@
     <groupId>com.crimsoncricket</groupId>
     <artifactId>ddd-building-blocks</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0.RELEASE</version>
+    <version>1.2.0.RELEASE</version>
     <name>ddd-building-blocks</name>
     <url>http://maven.apache.org</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <dependencies>
 
         <dependency>
@@ -27,6 +30,11 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>[4.3.9,6)</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>[4.3.9,6)</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
