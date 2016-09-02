@@ -17,10 +17,16 @@
 
 package com.crimsoncricket.ddd.application;
 
-import com.crimsoncricket.ddd.application.EventSerializer;
 import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
+import java.time.ZoneId;
 
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
@@ -29,7 +35,23 @@ public class EventSerializerJSON implements EventSerializer {
     private Gson gson;
 
     public EventSerializerJSON() {
-        this.gson = new GsonBuilder().create();
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(ZoneId.class, new TypeAdapter<ZoneId>() {
+                    @Override
+                    public void write(JsonWriter out, ZoneId value) throws IOException {
+                        out.value(value == null ? null : value.getId());
+                    }
+                    @Override
+                    public ZoneId read(JsonReader in) throws IOException {
+                        if (in.peek() == JsonToken.NULL) {
+                            in.nextNull();
+                            return null;
+                        } else {
+                            return ZoneId.of(in.nextString());
+                        }
+                    }
+                })
+                .create();
     }
 
     @Override
