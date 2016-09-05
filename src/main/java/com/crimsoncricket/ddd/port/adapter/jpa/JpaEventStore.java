@@ -17,6 +17,7 @@
 
 package com.crimsoncricket.ddd.port.adapter.jpa;
 
+import com.crimsoncricket.ddd.application.EventInitiatorResolver;
 import com.crimsoncricket.ddd.application.EventSerializer;
 import com.crimsoncricket.ddd.application.EventStore;
 import com.crimsoncricket.ddd.application.StoredEvent;
@@ -32,30 +33,22 @@ import java.util.List;
 
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
-public class JpaEventStore implements EventStore {
+public class JpaEventStore extends EventStore {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    private EventSerializer eventSerializer;
 
-    public JpaEventStore(EventSerializer eventSerializer) {
-        assertArgumentNotNull(eventSerializer, "Event serializer may not be null.");
-        this.eventSerializer = eventSerializer;
+    public JpaEventStore(
+            EventSerializer eventSerializer,
+            EventInitiatorResolver initiatorResolver) {
+        super(eventSerializer, initiatorResolver);
     }
 
     @Override
-    public void append(DomainEvent anEvent) {
-        assertArgumentNotNull(anEvent, "The domain event may not be null.");
-        StoredEvent storedEvent = createStoredEvent(anEvent);
+    protected void store(StoredEvent storedEvent) {
         entityManager.persist(storedEvent);
     }
-
-    private StoredEvent createStoredEvent(DomainEvent anEvent) {
-        String serializedEvent = eventSerializer.serialize(anEvent);
-        return new StoredEvent(anEvent.occurredOn(), anEvent.getClass().getName(), serializedEvent);
-    }
-
 
     @Override
     public List<StoredEvent> allEventsAfter(Long eventId) {

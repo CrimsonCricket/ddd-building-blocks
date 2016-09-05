@@ -29,6 +29,9 @@ import static com.crimsoncricket.asserts.Assert.assertStringArgumentNotEmpty;
 @MappedSuperclass
 public abstract class Id implements Serializable {
 
+    @Column(name = "id")
+    private String id;
+
     // No-arg constructor to keep Hibernate happy
     protected Id(){}
 
@@ -38,8 +41,9 @@ public abstract class Id implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "id")
-    private String id;
+    public TypedIdentity asTypedIdentity() {
+        return new TypedIdentity(this.getClass(), this.id);
+    }
 
     public String id(){return this.id;}
 
