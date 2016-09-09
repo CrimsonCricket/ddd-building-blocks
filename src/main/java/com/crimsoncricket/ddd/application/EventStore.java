@@ -83,7 +83,10 @@ public abstract class EventStore {
 
                         references.addAll(eventReferencesFrom(item));
                     });
+                } else if (value != null) {
+                    references.addAll( eventReferencesFrom(value));
                 }
+
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
