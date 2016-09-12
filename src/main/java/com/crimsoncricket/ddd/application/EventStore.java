@@ -20,6 +20,7 @@ package com.crimsoncricket.ddd.application;
 import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import com.crimsoncricket.ddd.domain.model.Id;
 import com.crimsoncricket.ddd.domain.model.TypedIdentity;
+import com.crimsoncricket.ddd.domain.model.ValueObject;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
@@ -83,7 +84,7 @@ public abstract class EventStore {
 
                         references.addAll(eventReferencesFrom(item));
                     });
-                } else if (value != null) {
+                } else if (value instanceof ValueObject) {
                     references.addAll( eventReferencesFrom(value));
                 }
 
