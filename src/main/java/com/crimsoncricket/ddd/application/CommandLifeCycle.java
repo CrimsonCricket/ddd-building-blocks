@@ -44,9 +44,8 @@ public class CommandLifeCycle {
     }
 
 
-    @SuppressWarnings("unchecked")
     private void ensureThatAllPublishedEventsAreStored() {
-        domainEventPublisher().subscribe(new DomainEventSubscriber(DomainEvent.class) {
+        domainEventPublisher().subscribe(new DomainEventSubscriber<DomainEvent> (DomainEvent.class) {
             @Override
             protected void handleEvent(DomainEvent aDomainEvent) {
                 eventStore.append(aDomainEvent);

@@ -17,10 +17,14 @@
 
 package com.crimsoncricket.ddd.application;
 
-import com.crimsoncricket.ddd.domain.model.AggregateRoot;
+import com.crimsoncricket.ddd.domain.model.DomainEvent;
+import com.crimsoncricket.ddd.domain.model.TypedIdentity;
 
-public interface AggregateRootVersionIncrementer {
+import java.util.Optional;
 
-    void ensureAggregateRootVersionWillBeIncremented(AggregateRoot aggregateRoot);
+public interface EventInitiatorResolver {
+
+
+    Optional<TypedIdentity> intiatorOf(DomainEvent domainEvent);
 
 }
