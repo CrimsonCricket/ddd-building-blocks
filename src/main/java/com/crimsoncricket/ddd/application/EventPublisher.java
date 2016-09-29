@@ -45,7 +45,7 @@ public class EventPublisher {
         this.latestPublishedEventId = 0L;
     }
 
-    public void publishAllUnpublishedEventsFrom(
+    void publishAllUnpublishedEventsFrom(
             EventStore eventStore,
             EventSerializer serializer,
             EventDispatcher dispatcher

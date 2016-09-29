@@ -26,19 +26,18 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class CommandLifeCycle {
 
-    private EventStore eventStore;
+    private final PersistenceLifeCycle persistenceLifeCycle;
+    private final EventStore eventStore;
 
-    public CommandLifeCycle(EventStore eventStore) {
-        setEventStore(eventStore);
-    }
-
-
-    private void setEventStore(EventStore eventStore) {
+    public CommandLifeCycle(PersistenceLifeCycle persistenceLifeCycle, EventStore eventStore) {
         assertArgumentNotNull(eventStore, "Event store may not be null");
+        this.persistenceLifeCycle = persistenceLifeCycle;
+        assertArgumentNotNull(persistenceLifeCycle, "Persistence life cycle may not be null");
         this.eventStore = eventStore;
     }
 
     public void start() {
+        persistenceLifeCycle.begin();
         domainEventPublisher().reset();
         ensureThatAllPublishedEventsAreStored();
     }
@@ -59,9 +58,11 @@ public class CommandLifeCycle {
 
 
     public void end() {
+        persistenceLifeCycle.commit();
     }
 
     public void failure() {
+        persistenceLifeCycle.rollback();
     }
 
 

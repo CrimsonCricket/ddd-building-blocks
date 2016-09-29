@@ -59,7 +59,7 @@ public class EventPublisherService {
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void publishAllNonPublishedEvents() {
 
         EventPublisher publisher = eventPublisherRepository.publisherWithName(this.publisherName);

@@ -15,26 +15,14 @@
  *
  */
 
-package com.crimsoncricket.ddd.domain.model;
+package com.crimsoncricket.ddd.application;
 
-import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
+public interface PersistenceLifeCycle {
 
-public abstract class DomainEventSubscriber<T extends  DomainEvent> {
+    void begin();
 
-    private Class<T> eventType;
+    void commit();
 
-    protected DomainEventSubscriber(Class<T> eventType) {
-        this.eventType = eventType;
-    }
-
-    @SuppressWarnings("unchecked")
-    void notify(DomainEvent anEvent) {
-        assertArgumentNotNull(anEvent, "The domain event may not be null.");
-        if (this.eventType.isAssignableFrom(anEvent.getClass()))
-            this.handleEvent((T) anEvent);
-    }
-
-    protected abstract void handleEvent(T aDomainEvent);
-
+    void rollback();
 
 }

@@ -17,7 +17,6 @@
 
 package com.crimsoncricket.ddd.application;
 
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,7 +25,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Transactional(rollbackFor = Exception.class) // command transactions should roll back on checked exceptions
 public @interface Command {
 
 
