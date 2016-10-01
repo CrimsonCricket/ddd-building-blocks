@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Martijn van der Woud - The Crimson Cricket Internet Services
+ * Copyright 2016 Martijn van der Woud - The Crimson Cricket Internet Services
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,16 +12,14 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.crimsoncricket.ddd.port.adapter.jpa;
 
 import com.crimsoncricket.ddd.application.EventInitiatorResolver;
 import com.crimsoncricket.ddd.application.EventSerializer;
-import com.crimsoncricket.ddd.application.EventStore;
+import com.crimsoncricket.ddd.application.AbstractEventStore;
 import com.crimsoncricket.ddd.application.StoredEvent;
-import com.crimsoncricket.ddd.domain.model.DomainEvent;
 
 
 import javax.persistence.EntityManager;
@@ -31,9 +29,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
-
-public class JpaEventStore extends EventStore {
+public class JpaEventStore extends AbstractEventStore {
 
     @PersistenceContext
     private EntityManager entityManager;
