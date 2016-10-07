@@ -24,4 +24,6 @@ public interface PersistenceLifeCycle {
 
     void rollback();
 
+    void flush();
+
 }

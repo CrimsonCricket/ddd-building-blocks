@@ -19,25 +19,34 @@ package com.crimsoncricket.ddd.port.adapter.jpa.spring;
 import com.crimsoncricket.ddd.application.PersistenceLifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
-@SuppressWarnings("WeakerAccess")
 public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
 
     private static final Logger logger = LoggerFactory.getLogger(JpaPersistenceLifecycle.class);
 
     private final JpaTransactionManager transactionManager;
     private final ThreadLocal<TransactionStatus> transactionStatusHolder = new ThreadLocal<TransactionStatus>();
+    private final EntityManagerFactory entityManagerFactory;
 
-
-    public JpaPersistenceLifecycle(JpaTransactionManager transactionManager) {
+    public JpaPersistenceLifecycle(
+            JpaTransactionManager transactionManager,
+            EntityManagerFactory entityManagerFactory
+    ) {
         assertArgumentNotNull(transactionManager, "The transaction manager may not be null.");
+        assertArgumentNotNull(entityManagerFactory, "The entity manager factory may not be null");
         this.transactionManager = transactionManager;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
@@ -66,6 +75,14 @@ public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
     public void rollback() {
         transactionManager.rollback(transactionStatusHolder.get());
         logger.debug("Rolled back transaction");
+    }
+
+    @Override
+    public void flush() {
+        EntityManagerHolder entityManagerHolder =
+                (EntityManagerHolder) TransactionSynchronizationManager.getResource(entityManagerFactory);
+        EntityManager entityManager = entityManagerHolder.getEntityManager();
+        entityManager.flush();
     }
 
 
