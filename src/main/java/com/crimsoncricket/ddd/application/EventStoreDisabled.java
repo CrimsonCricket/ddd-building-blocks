@@ -18,11 +18,19 @@ package com.crimsoncricket.ddd.application;
 
 import com.crimsoncricket.ddd.domain.model.DomainEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface EventStore {
+public class EventStoreDisabled implements EventStore {
 
-    void append(DomainEvent anEvent);
 
-    List<StoredEvent> allEventsAfter(Long eventId);
+    @Override
+    public void append(DomainEvent anEvent) {
+        // disabled
+    }
+
+    @Override
+    public List<StoredEvent> allEventsAfter(Long eventId) {
+        return new ArrayList<>();
+    }
 }

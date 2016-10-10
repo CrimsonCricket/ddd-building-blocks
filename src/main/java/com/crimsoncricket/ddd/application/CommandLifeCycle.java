@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Martijn van der Woud - The Crimson Cricket Internet Services
+ * Copyright 2016 Martijn van der Woud - The Crimson Cricket Internet Services
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.crimsoncricket.ddd.application;
@@ -26,19 +25,18 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class CommandLifeCycle {
 
-    private EventStore eventStore;
+    private final PersistenceLifeCycle persistenceLifeCycle;
+    private final EventStore eventStore;
 
-    public CommandLifeCycle(EventStore eventStore) {
-        setEventStore(eventStore);
-    }
-
-
-    private void setEventStore(EventStore eventStore) {
+    public CommandLifeCycle(PersistenceLifeCycle persistenceLifeCycle, EventStore eventStore) {
         assertArgumentNotNull(eventStore, "Event store may not be null");
+        this.persistenceLifeCycle = persistenceLifeCycle;
+        assertArgumentNotNull(persistenceLifeCycle, "Persistence life cycle may not be null");
         this.eventStore = eventStore;
     }
 
     public void start() {
+        persistenceLifeCycle.begin();
         domainEventPublisher().reset();
         ensureThatAllPublishedEventsAreStored();
     }
@@ -59,9 +57,11 @@ public class CommandLifeCycle {
 
 
     public void end() {
+        persistenceLifeCycle.commit();
     }
 
     public void failure() {
+        persistenceLifeCycle.rollback();
     }
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Martijn van der Woud - The Crimson Cricket Internet Services
+ * Copyright 2016 Martijn van der Woud - The Crimson Cricket Internet Services
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.crimsoncricket.ddd.domain.model;
@@ -27,14 +26,14 @@ public abstract class DomainEventSubscriber<T extends  DomainEvent> {
         this.eventType = eventType;
     }
 
-    protected abstract void handleEvent(T aDomainEvent);
-
     @SuppressWarnings("unchecked")
-    public void notify(DomainEvent anEvent) {
+    void notify(DomainEvent anEvent) {
         assertArgumentNotNull(anEvent, "The domain event may not be null.");
         if (this.eventType.isAssignableFrom(anEvent.getClass()))
             this.handleEvent((T) anEvent);
     }
+
+    protected abstract void handleEvent(T aDomainEvent);
 
 
 }

@@ -16,13 +16,14 @@
 
 package com.crimsoncricket.ddd.application;
 
-import com.crimsoncricket.ddd.domain.model.DomainEvent;
+public interface PersistenceLifeCycle {
 
-import java.util.List;
+    void begin();
 
-public interface EventStore {
+    void commit();
 
-    void append(DomainEvent anEvent);
+    void rollback();
 
-    List<StoredEvent> allEventsAfter(Long eventId);
+    void flush();
+
 }

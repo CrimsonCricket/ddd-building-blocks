@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Martijn van der Woud - The Crimson Cricket Internet Services
+ * Copyright 2016 Martijn van der Woud - The Crimson Cricket Internet Services
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,12 +12,10 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.crimsoncricket.ddd.application;
 
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,7 +24,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Transactional(rollbackFor = Exception.class) // command transactions should roll back on checked exceptions
 public @interface Command {
 
 
