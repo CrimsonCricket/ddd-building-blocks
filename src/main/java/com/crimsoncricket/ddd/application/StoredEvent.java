@@ -18,15 +18,10 @@ package com.crimsoncricket.ddd.application;
 
 import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import com.crimsoncricket.ddd.domain.model.TypedIdentity;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.common.reflection.ClassLoaderDelegate;
+import org.hibernate.annotations.Immutable;
 
 import javax.annotation.Nullable;
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.Index;
-import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
@@ -56,7 +51,8 @@ public class StoredEvent {
     @Column(nullable = false)
     private String typeName;
 
-    @Column(columnDefinition="Text", nullable = false)
+    @Lob
+    @Column(nullable = false)
     private String eventBody;
 
     @Embedded
@@ -73,7 +69,7 @@ public class StoredEvent {
     })
     private Set<TypedIdentity> eventReferences = new HashSet<>();
 
-    protected StoredEvent() {};
+    protected StoredEvent() {}
 
     public StoredEvent(
             Instant occurredOn,
@@ -107,6 +103,7 @@ public class StoredEvent {
         return new SequencedEvent(eventId, event);
     }
 
+    @SuppressWarnings("unused")
     public Instant occurredOn() {
         if (occurredOnInEpochMillis != null)
             return Instant.ofEpochMilli(occurredOnInEpochMillis);
@@ -114,18 +111,22 @@ public class StoredEvent {
             return occurredOn;
     }
 
+    @SuppressWarnings("unused")
     public String typeName() {
         return typeName;
     }
 
+    @SuppressWarnings("unused")
     public String eventBody() {
         return eventBody;
     }
 
+    @SuppressWarnings("unused")
     public Optional<TypedIdentity> initiator() {
         return Optional.ofNullable(initiator);
     }
 
+    @SuppressWarnings("unused")
     public Set<TypedIdentity> eventReferences() {
         return Collections.unmodifiableSet(eventReferences);
     }
