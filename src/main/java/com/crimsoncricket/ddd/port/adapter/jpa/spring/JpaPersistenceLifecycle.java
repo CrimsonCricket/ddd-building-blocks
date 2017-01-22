@@ -37,6 +37,7 @@ public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
 
     private final JpaTransactionManager transactionManager;
     private final ThreadLocal<TransactionStatus> transactionStatusHolder = new ThreadLocal<TransactionStatus>();
+
     private final EntityManagerFactory entityManagerFactory;
 
     public JpaPersistenceLifecycle(
@@ -73,7 +74,14 @@ public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
 
     @Override
     public void rollback() {
-        transactionManager.rollback(transactionStatusHolder.get());
+	    TransactionStatus transactionStatus = transactionStatusHolder.get();
+	    if (transactionStatus.isCompleted()) {
+	    	logger.debug("Skipping rollback of transaction. Transaction is already completed. " +
+				    "Presumably, a rollback already occurred" +
+				    "as a result of a runtime exception during transaction commit");
+	    	return;
+	    }
+	    transactionManager.rollback(transactionStatus);
         logger.debug("Rolled back transaction");
     }
 
