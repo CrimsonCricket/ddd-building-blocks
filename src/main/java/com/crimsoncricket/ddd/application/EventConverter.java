@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Martijn van der Woud - The Crimson Cricket Internet Services
+ * Copyright 2017 Martijn van der Woud - The Crimson Cricket Internet Services
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,26 +12,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
+ *
  */
 
 package com.crimsoncricket.ddd.application;
 
-public class SequencedEvent {
+public interface EventConverter {
 
-    private Long eventId;
+	SequencedEvent converted(SequencedEvent anEvent);
 
-    private Object domainEvent;
-
-    public SequencedEvent(Long eventId, Object domainEvent) {
-        this.eventId = eventId;
-        this.domainEvent = domainEvent;
-    }
-
-    public Long eventId() {
-        return eventId;
-    }
-
-    public Object domainEvent() {
-        return domainEvent;
-    }
 }

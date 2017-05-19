@@ -16,7 +16,6 @@
 
 package com.crimsoncricket.ddd.application;
 
-import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -54,13 +53,13 @@ public class EventSerializerJSON implements EventSerializer {
     }
 
     @Override
-    public String serialize(DomainEvent anEvent) {
+    public String serialize(Object anEvent) {
         assertArgumentNotNull(anEvent, "The domain event may not be null.");
         return gson.toJson(anEvent);
     }
 
     @Override
-    public <T extends DomainEvent> T unserialize(String serializedEvent, Class<T> eventClass) {
+    public <T> T unserialize(String serializedEvent, Class<T> eventClass) {
         return gson.fromJson(serializedEvent, eventClass);
     }
 
