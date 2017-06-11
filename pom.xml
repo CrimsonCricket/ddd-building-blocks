@@ -20,8 +20,8 @@
     <groupId>com.crimsoncricket</groupId>
     <artifactId>ddd-building-blocks</artifactId>
     <packaging>jar</packaging>
-    <version>2.1-SNAPSHOT</version>
-    <name>ddd-building-blocks</name>
+    <version>2.2-SNAPSHOT</version>
+    <name>ddd-building-2.1blocks</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
