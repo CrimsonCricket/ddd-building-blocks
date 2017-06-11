@@ -15,57 +15,73 @@
  */
 
 package com.crimsoncricket.ddd.application;
+
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 public class EventPublisherService {
 
 
-    private String publisherName;
-
-    private EventPublisherRepository eventPublisherRepository;
-
-    private EventStore eventStore;
-
-    private EventSerializer eventSerializer;
-
-    private EventDispatcher eventDispatcher;
+	private final String publisherName;
+	private final EventPublisherRepository eventPublisherRepository;
+	private final EventStore eventStore;
+	private final List<EventConverter> eventConverters = new ArrayList<>();
+	private final EventSerializer eventSerializer;
+	private final EventDispatcher eventDispatcher;
 
 
-    public EventPublisherService(
-            String publisherName,
-            EventPublisherRepository eventPublisherRepository,
-            EventStore eventStore,
-            EventSerializer eventSerializer,
-            EventDispatcher eventDispatcher
+	public EventPublisherService(
+			String publisherName,
+			EventPublisherRepository eventPublisherRepository,
+			EventStore eventStore,
+			EventSerializer eventSerializer,
+			EventDispatcher eventDispatcher
+	) {
+		this(publisherName, eventPublisherRepository, eventStore, new ArrayList<>(), eventSerializer, eventDispatcher);
+	}
 
-    ) {
-        assertArgumentNotNull(publisherName, "Publisher name may not be null");
-        this.publisherName = publisherName;
+	public EventPublisherService(
+			String publisherName,
+			EventPublisherRepository eventPublisherRepository,
+			EventStore eventStore,
+			List<EventConverter> eventConverters,
+			EventSerializer eventSerializer,
+			EventDispatcher eventDispatcher
 
-        assertArgumentNotNull(eventPublisherRepository, "Publisher repository may not be null");
-        this.eventPublisherRepository = eventPublisherRepository;
+	) {
+		assertArgumentNotNull(publisherName, "Publisher name may not be null");
+		this.publisherName = publisherName;
 
-        assertArgumentNotNull(eventStore, "Event store may not be null");
-        this.eventStore = eventStore;
+		assertArgumentNotNull(eventPublisherRepository, "Publisher repository may not be null");
+		this.eventPublisherRepository = eventPublisherRepository;
 
-        assertArgumentNotNull(eventSerializer, "Event serializer may not be null");
-        this.eventSerializer = eventSerializer;
+		assertArgumentNotNull(eventConverters, "Event converters list may not be null (empty is allowed");
+		this.eventConverters.addAll(eventConverters);
 
-        assertArgumentNotNull(eventDispatcher, "Event dispatcher may not be null");
-        this.eventDispatcher = eventDispatcher;
-    }
+		assertArgumentNotNull(eventStore, "Event store may not be null");
+		this.eventStore = eventStore;
+
+		assertArgumentNotNull(eventSerializer, "Event serializer may not be null");
+		this.eventSerializer = eventSerializer;
+
+		assertArgumentNotNull(eventDispatcher, "Event dispatcher may not be null");
+		this.eventDispatcher = eventDispatcher;
+	}
 
 
-    @Transactional(rollbackFor = Exception.class)
-    public void publishAllNonPublishedEvents() {
+	@Transactional(rollbackFor = Exception.class)
+	public void publishAllNonPublishedEvents() {
 
-        EventPublisher publisher = eventPublisherRepository.publisherWithName(this.publisherName);
-        if (publisher == null)
-            throw new RuntimeException("Event publisher with name " + publisherName + " could not be found.");
+		EventPublisher publisher = eventPublisherRepository.publisherWithName(this.publisherName);
+		if (publisher == null)
+			throw new RuntimeException("Event publisher with name " + publisherName + " could not be found.");
 
-        publisher.publishAllUnpublishedEventsFrom(eventStore, eventSerializer, eventDispatcher);
+		publisher.publishAllUnpublishedEventsFrom(eventStore, eventConverters, eventSerializer, eventDispatcher);
 
-    }
+	}
 }

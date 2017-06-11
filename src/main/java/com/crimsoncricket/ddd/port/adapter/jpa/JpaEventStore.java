@@ -49,7 +49,7 @@ public class JpaEventStore extends AbstractEventStore {
     @Override
     public List<StoredEvent> allEventsAfter(Long eventId) {
         Query query = entityManager
-                .createQuery("from StoredEvent e where e.eventId > :eventId")
+                .createQuery("select e from StoredEvent e where e.eventId > :eventId")
                 .setParameter("eventId", eventId);
 
         List<StoredEvent> eventList = new ArrayList<>();

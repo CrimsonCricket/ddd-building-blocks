@@ -16,13 +16,11 @@
 
 package com.crimsoncricket.ddd.application;
 
-import com.crimsoncricket.ddd.domain.model.DomainEvent;
-
 public interface EventSerializer {
 
-    String serialize(DomainEvent anEvent);
+    String serialize(Object anEvent);
 
-    <T extends DomainEvent> T unserialize(String serializedEvent, Class<T> eventClass);
+    <T> T unserialize(String serializedEvent, Class<T> eventClass);
 
 
 }

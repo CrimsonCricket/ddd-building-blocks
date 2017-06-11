@@ -23,52 +23,56 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class EventPublisher {
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long publisherId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long publisherId;
 
-    private String publisherName;
+	private String publisherName;
 
-    private Long latestPublishedEventId;
-
-
-    protected EventPublisher(){}
-
-    public EventPublisher(String publisherName) {
-        this.publisherName = publisherName;
-        this.latestPublishedEventId = 0L;
-    }
-
-    void publishAllUnpublishedEventsFrom(
-            EventStore eventStore,
-            EventSerializer serializer,
-            EventDispatcher dispatcher
-    ) {
-        List<StoredEvent> storedEvents = eventStore.allEventsAfter(latestPublishedEventId);
-        List<SequencedEvent> sequencedEvents = storedEvents.stream()
-                .map(storedEvent -> storedEvent.toSequencedEvent(serializer))
-                .collect(Collectors.toList());
-
-        sequencedEvents
-                .forEach(dispatcher::dispatch);
-
-        SequencedEvent lastEvent = sequencedEvents.stream().reduce((a,b) ->b).orElse(null);
-        if (lastEvent != null)
-            this.latestPublishedEventId = lastEvent.eventId();
-
-    }
+	private Long latestPublishedEventId;
 
 
-    public String publisherName() {
-        return publisherName;
-    }
+	protected EventPublisher() {
+	}
 
-    public Long latestPublishedEventId() {
-        return latestPublishedEventId;
-    }
+	public EventPublisher(String publisherName) {
+		this.publisherName = publisherName;
+		this.latestPublishedEventId = 0L;
+	}
+
+	void publishAllUnpublishedEventsFrom(
+			EventStore eventStore,
+			List<EventConverter> eventConverters,
+			EventSerializer serializer,
+			EventDispatcher dispatcher
+	) {
+		Stream<SequencedEvent> eventStream = eventStore
+				.allEventsAfter(latestPublishedEventId)
+				.stream()
+				.map(storedEvent -> storedEvent.toSequencedEvent(serializer));
+
+		for (EventConverter converter : eventConverters)
+			eventStream = eventStream.map(converter::converted);
+
+		List<SequencedEvent> eventList = eventStream.collect(Collectors.toList());
+		eventList.forEach(dispatcher::dispatch);
+
+		if (! eventList.isEmpty())
+			this.latestPublishedEventId = eventList.get(eventList.size() - 1).eventId();
+	}
+
+
+	public String publisherName() {
+		return publisherName;
+	}
+
+	public Long latestPublishedEventId() {
+		return latestPublishedEventId;
+	}
 }
