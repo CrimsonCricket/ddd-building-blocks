@@ -18,20 +18,24 @@ package com.crimsoncricket.ddd.application;
 
 public class SequencedEvent {
 
-    private Long eventId;
+	private Long eventId;
 
-    private Object domainEvent;
+	private Object domainEvent;
 
-    public SequencedEvent(Long eventId, Object domainEvent) {
-        this.eventId = eventId;
-        this.domainEvent = domainEvent;
-    }
+	public SequencedEvent(Long eventId, Object domainEvent) {
+		this.eventId = eventId;
+		this.domainEvent = domainEvent;
+	}
 
-    public Long eventId() {
-        return eventId;
-    }
+	public SequencedEvent withDomainEvent(Object domainEvent) {
+		return new SequencedEvent(eventId, domainEvent);
+	}
 
-    public Object domainEvent() {
-        return domainEvent;
-    }
+	public Long eventId() {
+		return eventId;
+	}
+
+	public Object domainEvent() {
+		return domainEvent;
+	}
 }
