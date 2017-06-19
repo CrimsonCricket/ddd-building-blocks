@@ -21,7 +21,7 @@
     <artifactId>ddd-building-blocks</artifactId>
     <packaging>jar</packaging>
     <version>2.3-SNAPSHOT</version>
-    <name>ddd-building-2.1blocks</name>
+    <name>ddd-building-blocks</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
