@@ -28,34 +28,42 @@ import static com.crimsoncricket.asserts.Assert.assertStringArgumentNotEmpty;
 @MappedSuperclass
 public abstract class Id implements Serializable {
 
-    @Column(name = "id")
-    private String id;
+	@Column(name = "id")
+	private String id;
 
-    // No-arg constructor to keep Hibernate happy
-    protected Id(){}
+	// No-arg constructor to keep Hibernate happy
+	protected Id() {
+	}
 
-    protected Id(String id) {
-        assertArgumentNotNull(id, "id may not be null");
-        assertStringArgumentNotEmpty(id, "id may not be empty");
-        this.id = id;
-    }
+	protected Id(String id) {
+		assertArgumentNotNull(id, "id may not be null");
+		assertStringArgumentNotEmpty(id, "id may not be empty");
+		this.id = id;
+	}
 
-    public TypedIdentity asTypedIdentity() {
-        return new TypedIdentity(this.getClass(), this.id);
-    }
+	public TypedIdentity asTypedIdentity() {
+		return new TypedIdentity(this.getClass(), this.id);
+	}
 
-    public String id(){return this.id;}
+	public String id() {
+		return this.id;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Id)) return false;
-        Id id1 = (Id) o;
-        return Objects.equals(id(), id1.id());
-    }
+	@Override
+	public String toString() {
+		return id;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id());
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Id)) return false;
+		Id id1 = (Id) o;
+		return Objects.equals(id(), id1.id());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id());
+	}
 }
