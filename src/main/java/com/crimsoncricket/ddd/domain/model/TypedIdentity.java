@@ -23,30 +23,67 @@ import java.util.Objects;
 @Embeddable
 public class TypedIdentity {
 
-    @Column(nullable = false)
-    private String identityType;
+	public static TypedIdentity from(Id id) {
+		return new TypedIdentity(id.getClass(), id.id());
+	}
 
-    @Column(nullable = false)
-    private String identityValue;
+	@SuppressWarnings("unchecked")
+	public static TypedIdentity from(String identityType, String identityValue) {
+		Class<?> idClass;
+		try {
+			idClass = Class.forName(identityType);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		if (!Id.class.isAssignableFrom(idClass)) {
+			throw new IllegalArgumentException("Unrecognized identity type " + identityType);
+		}
+		Class<? extends Id> resolvedClass = (Class<? extends Id>) idClass;
 
-    protected TypedIdentity() {}
+		return new TypedIdentity(resolvedClass, identityValue);
+	}
 
-    TypedIdentity(Class<? extends Id> identityClass, String identityValue) {
-        this.identityType = identityClass.getName();
-        this.identityValue = identityValue;
-    }
+	@Column(nullable = false)
+	private String identityType;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TypedIdentity)) return false;
-        TypedIdentity that = (TypedIdentity) o;
-        return Objects.equals(identityType, that.identityType) &&
-                Objects.equals(identityValue, that.identityValue);
-    }
+	@Column(nullable = false)
+	private String identityValue;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(identityType, identityValue);
-    }
+	protected TypedIdentity() {
+	}
+
+	private TypedIdentity(Class<? extends Id> identityClass, String identityValue) {
+		this.identityType = identityClass.getName();
+		this.identityValue = identityValue;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Id toId() {
+		Class<? extends Id> resolvedClass;
+		try {
+			resolvedClass = (Class<? extends Id>) Class.forName(identityType);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			return resolvedClass.getConstructor(String.class).newInstance(identityValue);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof TypedIdentity)) return false;
+		TypedIdentity that = (TypedIdentity) o;
+		return Objects.equals(identityType, that.identityType) &&
+				Objects.equals(identityValue, that.identityValue);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(identityType, identityValue);
+	}
+
 }

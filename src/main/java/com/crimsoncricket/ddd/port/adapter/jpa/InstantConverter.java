@@ -24,19 +24,19 @@ import java.time.Instant;
 @Converter(autoApply = true)
 public class InstantConverter implements AttributeConverter<Instant, Timestamp> {
 
-    @Override
-    public Timestamp convertToDatabaseColumn(Instant attribute) {
-        if (attribute == null)
-            return null;
+	@Override
+	public Timestamp convertToDatabaseColumn(Instant attribute) {
+		if (attribute == null)
+			return null;
 
-        return Timestamp.from(attribute);
-    }
+		return Timestamp.from(attribute);
+	}
 
-    @Override
-    public Instant convertToEntityAttribute(Timestamp dbData) {
-        if (dbData == null)
-            return null;
+	@Override
+	public Instant convertToEntityAttribute(Timestamp dbData) {
+		if (dbData == null)
+			return null;
 
-        return dbData.toInstant();
-    }
+		return dbData.toInstant();
+	}
 }

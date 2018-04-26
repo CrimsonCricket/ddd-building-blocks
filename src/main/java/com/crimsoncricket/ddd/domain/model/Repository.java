@@ -17,5 +17,5 @@
 package com.crimsoncricket.ddd.domain.model;
 
 public interface Repository<I extends Id> {
-    I nextIdentity();
+	I nextIdentity();
 }

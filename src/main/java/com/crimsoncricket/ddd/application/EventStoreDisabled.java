@@ -23,14 +23,13 @@ import java.util.List;
 
 public class EventStoreDisabled implements EventStore {
 
+	@Override
+	public void append(DomainEvent anEvent) {
 
-    @Override
-    public void append(DomainEvent anEvent) {
-        // disabled
-    }
+	}
 
-    @Override
-    public List<StoredEvent> allEventsAfter(Long eventId) {
-        return new ArrayList<>();
-    }
+	@Override
+	public List<StoredEvent> maxEventsAfter(Long eventId, Long limit) {
+		return new ArrayList<>();
+	}
 }

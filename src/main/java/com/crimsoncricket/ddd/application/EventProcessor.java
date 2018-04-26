@@ -16,9 +16,7 @@
 
 package com.crimsoncricket.ddd.application;
 
-public interface EventPublisherRepository {
+public interface EventProcessor {
 
-
-    EventPublisher publisherWithName(String name);
-
+	void process(EventMessage eventMessage);
 }

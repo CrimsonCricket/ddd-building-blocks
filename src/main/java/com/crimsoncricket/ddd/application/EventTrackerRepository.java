@@ -16,26 +16,8 @@
 
 package com.crimsoncricket.ddd.application;
 
-public class SequencedEvent {
+public interface EventTrackerRepository {
 
-	private Long eventId;
+	EventTracker trackerWithName(String name);
 
-	private Object domainEvent;
-
-	public SequencedEvent(Long eventId, Object domainEvent) {
-		this.eventId = eventId;
-		this.domainEvent = domainEvent;
-	}
-
-	public SequencedEvent withDomainEvent(Object domainEvent) {
-		return new SequencedEvent(eventId, domainEvent);
-	}
-
-	public Long eventId() {
-		return eventId;
-	}
-
-	public Object domainEvent() {
-		return domainEvent;
-	}
 }

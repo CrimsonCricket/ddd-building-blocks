@@ -18,12 +18,12 @@ package com.crimsoncricket.ddd.application;
 
 public interface PersistenceLifeCycle {
 
-    void begin();
+	void begin();
 
-    void commit();
+	void commit();
 
-    void rollback();
+	void rollback();
 
-    void flush();
+	void flush();
 
 }

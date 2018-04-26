@@ -22,31 +22,27 @@ import javax.persistence.Version;
 @MappedSuperclass
 public class AggregateRoot<I extends Id> extends Entity<I> {
 
-    @Version
-    private Integer version;
+	@Version
+	private Integer version;
 
+	protected AggregateRoot() {
+	}
 
-    protected AggregateRoot() {}
+	public AggregateRoot(I id) {
+		super(id);
+	}
 
-    public AggregateRoot(I id) {
-        super(id);
-    }
+	public Integer version() {
+		return version;
+	}
 
-    public Integer version() {
-        return version;
-    }
+	protected void ensureVersionIs(int expectedVersion) throws OutdatedEntityVersionException {
+		if (version != expectedVersion)
+			throw new OutdatedEntityVersionException(
+					"Attempted to execute a command on an outdated entity of type " + this.getClass().getSimpleName(),
+					expectedVersion,
+					version);
 
-
-    protected void ensureVersionIs(int expectedVersion) throws OutdatedEntityVersionException {
-        if (version != expectedVersion)
-            throw new OutdatedEntityVersionException(
-                    "Attempted to execute a command on an outdated entity of type " + this.getClass().getSimpleName(),
-                    expectedVersion,
-                    version);
-
-    }
-
-
-
+	}
 
 }

@@ -16,7 +16,6 @@
 
 package com.crimsoncricket.ddd.application;
 
-
 import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import com.crimsoncricket.ddd.domain.model.DomainEventPublisher;
 import com.crimsoncricket.ddd.domain.model.DomainEventSubscriber;
@@ -25,46 +24,42 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class CommandLifeCycle {
 
-    private final PersistenceLifeCycle persistenceLifeCycle;
-    private final EventStore eventStore;
+	private final PersistenceLifeCycle persistenceLifeCycle;
 
-    public CommandLifeCycle(PersistenceLifeCycle persistenceLifeCycle, EventStore eventStore) {
-        assertArgumentNotNull(eventStore, "Event store may not be null");
-        this.persistenceLifeCycle = persistenceLifeCycle;
-        assertArgumentNotNull(persistenceLifeCycle, "Persistence life cycle may not be null");
-        this.eventStore = eventStore;
-    }
+	private final EventStore eventStore;
 
-    public void start() {
-        persistenceLifeCycle.begin();
-        domainEventPublisher().reset();
-        ensureThatAllPublishedEventsAreStored();
-    }
+	public CommandLifeCycle(PersistenceLifeCycle persistenceLifeCycle, EventStore eventStore) {
+		assertArgumentNotNull(eventStore, "Event store may not be null");
+		this.persistenceLifeCycle = persistenceLifeCycle;
+		assertArgumentNotNull(persistenceLifeCycle, "Persistence life cycle may not be null");
+		this.eventStore = eventStore;
+	}
 
+	public void start() {
+		persistenceLifeCycle.begin();
+		domainEventPublisher().reset();
+		ensureThatAllPublishedEventsAreStored();
+	}
 
-    private void ensureThatAllPublishedEventsAreStored() {
-        domainEventPublisher().subscribe(new DomainEventSubscriber<DomainEvent> (DomainEvent.class) {
-            @Override
-            protected void handleEvent(DomainEvent aDomainEvent) {
-                eventStore.append(aDomainEvent);
-            }
-        });
-    }
+	private DomainEventPublisher domainEventPublisher() {
+		return DomainEventPublisher.instance();
+	}
 
-    private DomainEventPublisher domainEventPublisher() {
-        return DomainEventPublisher.instance();
-    }
+	private void ensureThatAllPublishedEventsAreStored() {
+		domainEventPublisher().subscribe(new DomainEventSubscriber<DomainEvent>(DomainEvent.class) {
+			@Override
+			protected void handleEvent(DomainEvent aDomainEvent) {
+				eventStore.append(aDomainEvent);
+			}
+		});
+	}
 
+	public void end() {
+		persistenceLifeCycle.commit();
+	}
 
-    public void end() {
-        persistenceLifeCycle.commit();
-    }
-
-    public void failure() {
-        persistenceLifeCycle.rollback();
-    }
-
-
-
+	public void failure() {
+		persistenceLifeCycle.rollback();
+	}
 
 }

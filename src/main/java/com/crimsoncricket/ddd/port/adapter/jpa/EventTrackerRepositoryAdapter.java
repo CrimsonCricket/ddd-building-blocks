@@ -16,34 +16,25 @@
 
 package com.crimsoncricket.ddd.port.adapter.jpa;
 
-import com.crimsoncricket.ddd.application.EventPublisher;
+import com.crimsoncricket.ddd.application.EventTracker;
+import com.crimsoncricket.ddd.application.EventTrackerRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
-public class EventPublisherRepository implements com.crimsoncricket.ddd.application.EventPublisherRepository {
+public class EventTrackerRepositoryAdapter implements EventTrackerRepository {
 
+	@PersistenceContext
+	private EntityManager entityManager;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	@Override
+	public EventTracker trackerWithName(String name) {
+		return entityManager
+				.createQuery("select t from EventTracker t where t.trackerName = :name", EventTracker.class)
+				.setParameter("name", name)
+				.setLockMode(LockModeType.PESSIMISTIC_WRITE)
+				.getSingleResult();
+	}
 
-    @Override
-    public EventPublisher publisherWithName(String name) {
-
-        Query query = entityManager
-                .createQuery("from EventPublisher p where p.publisherName = :name")
-                .setParameter("name", name)
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE);
-
-
-        Object result =  query.getSingleResult();
-
-        if (result instanceof EventPublisher)
-            return (EventPublisher) result;
-        else
-            throw new RuntimeException("Unexpected result type");
-
-    }
 }

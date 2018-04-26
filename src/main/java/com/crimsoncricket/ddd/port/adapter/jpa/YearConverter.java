@@ -23,20 +23,20 @@ import java.time.Year;
 @Converter(autoApply = true)
 public class YearConverter implements AttributeConverter<Year, Integer> {
 
-    @Override
-    public Integer convertToDatabaseColumn(Year attribute) {
-        if (attribute == null)
-            return null;
-        else
-            return attribute.getValue();
-    }
+	@Override
+	public Integer convertToDatabaseColumn(Year attribute) {
+		if (attribute == null)
+			return null;
+		else
+			return attribute.getValue();
+	}
 
-    @Override
-    public Year convertToEntityAttribute(Integer dbData) {
-        if (dbData == null)
-            return null;
-        else
-            return Year.of(dbData);
+	@Override
+	public Year convertToEntityAttribute(Integer dbData) {
+		if (dbData == null)
+			return null;
+		else
+			return Year.of(dbData);
 
-    }
+	}
 }

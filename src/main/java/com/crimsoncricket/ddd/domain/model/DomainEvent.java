@@ -22,22 +22,22 @@ import java.time.Instant;
 
 public class DomainEvent {
 
-    private int eventVersion;
-    private Instant occurredOn;
+	private int eventVersion;
 
-    protected DomainEvent(int eventVersion) {
-        Assert.assertArgumentNotNull(eventVersion, "The eventVersion argument may not be null");
-        this.occurredOn = Instant.now();
-        this.eventVersion = eventVersion;
-    }
+	private Instant occurredOn;
 
+	protected DomainEvent(int eventVersion) {
+		Assert.assertArgumentNotNull(eventVersion, "The eventVersion argument may not be null");
+		this.occurredOn = Instant.now();
+		this.eventVersion = eventVersion;
+	}
 
-    public Instant occurredOn() {
-        return occurredOn;
-    }
+	public Instant occurredOn() {
+		return occurredOn;
+	}
 
-    public int eventVersion() {
-        return eventVersion;
-    }
+	public int eventVersion() {
+		return eventVersion;
+	}
 
 }

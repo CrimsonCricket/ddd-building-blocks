@@ -16,118 +16,86 @@
 
 package com.crimsoncricket.ddd.application;
 
-import com.crimsoncricket.ddd.domain.model.DomainEvent;
 import com.crimsoncricket.ddd.domain.model.TypedIdentity;
 import org.hibernate.annotations.Immutable;
 
 import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.crimsoncricket.asserts.Assert.assertArgumentCollectionNotContainsNull;
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
-
 
 @Entity
 @Immutable
 @Table(indexes = {
-        @Index(columnList = "occurred_on")
+		@Index(columnList = "occurred_on")
 })
 public class StoredEvent {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long eventId;
 
-    @Column(name = "occurred_on", nullable = false)
-    private Instant occurredOn;
+	@Column(name = "occurred_on", nullable = false)
+	private Instant occurredOn;
 
-    private Long occurredOnInEpochMillis;
+	private Long occurredOnInEpochMillis;
 
-    @Column(nullable = false)
-    private String typeName;
+	@Column(nullable = false)
+	private String typeName;
 
-    @Lob
-    @Column(nullable = false)
-    private String eventBody;
+	@Lob
+	@Column(nullable = false)
+	private String eventBody;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "identityType", column = @Column(name = "initiatorType")),
-            @AttributeOverride(name = "identityValue", column = @Column(name = "initiatorId"))
-    })
-    private TypedIdentity initiator;
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "identityType", column = @Column(name = "initiatorType")),
+			@AttributeOverride(name = "identityValue", column = @Column(name = "initiatorId"))
+	})
+	private TypedIdentity initiator;
 
-    @ElementCollection
-    @JoinTable(indexes = {
-            @Index(columnList = "StoredEvent_eventId"),
-            @Index(columnList = "identityType,identityValue"),
-    })
-    private Set<TypedIdentity> eventReferences = new HashSet<>();
+	protected StoredEvent() {
+	}
 
-    protected StoredEvent() {}
+	public StoredEvent(
+			Instant occurredOn,
+			String typeName,
+			String eventBody,
+			@Nullable TypedIdentity initiator
+	) {
+		assertArgumentNotNull(occurredOn, "Timestamp occuredOn may not be null.");
+		assertArgumentNotNull(typeName, "Type name may not be null");
+		assertArgumentNotNull(eventBody, "Event body may not be null.");
+		this.eventBody = eventBody;
+		this.occurredOn = occurredOn;
+		this.occurredOnInEpochMillis = occurredOn.toEpochMilli();
+		this.typeName = typeName;
+		this.initiator = initiator;
+	}
 
-    public StoredEvent(
-            Instant occurredOn,
-            String typeName,
-            String eventBody,
-            @Nullable TypedIdentity initiator,
-            Set<TypedIdentity> eventReferences
+	public Instant occurredOn() {
+		if (occurredOnInEpochMillis != null)
+			return Instant.ofEpochMilli(occurredOnInEpochMillis);
+		else
+			return occurredOn;
+	}
 
-    ) {
-        assertArgumentNotNull(occurredOn, "Timestamp occuredOn may not be null.");
-        assertArgumentNotNull(typeName, "Type name may not be null");
-        assertArgumentNotNull(eventBody, "Event body may not be null.");
-        assertArgumentCollectionNotContainsNull(eventReferences, "Event references collection may not contain nulls");
-        this.eventBody = eventBody;
-        this.occurredOn = occurredOn;
-        this.occurredOnInEpochMillis = occurredOn.toEpochMilli();
-        this.typeName = typeName;
-        this.initiator = initiator;
-        this.eventReferences.addAll(eventReferences);
-    }
+	public Long eventId() {
+		return eventId;
+	}
 
-    @SuppressWarnings({"unchecked", "WeakerAccess"})
-    public SequencedEvent toSequencedEvent(EventSerializer serializer)  {
-        Class<DomainEvent> eventClass;
-        try {
-            eventClass = (Class<DomainEvent>) Class.forName(typeName);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        DomainEvent event = serializer.unserialize(eventBody, eventClass);
-        return new SequencedEvent(eventId, event);
-    }
+	public String typeName() {
+		return typeName;
+	}
 
-    @SuppressWarnings("unused")
-    public Instant occurredOn() {
-        if (occurredOnInEpochMillis != null)
-            return Instant.ofEpochMilli(occurredOnInEpochMillis);
-        else
-            return occurredOn;
-    }
+	public String eventBody() {
+		return eventBody;
+	}
 
-    @SuppressWarnings("unused")
-    public String typeName() {
-        return typeName;
-    }
+	public Optional<TypedIdentity> initiator() {
+		return Optional.ofNullable(initiator);
+	}
 
-    @SuppressWarnings("unused")
-    public String eventBody() {
-        return eventBody;
-    }
-
-    @SuppressWarnings("unused")
-    public Optional<TypedIdentity> initiator() {
-        return Optional.ofNullable(initiator);
-    }
-
-    @SuppressWarnings("unused")
-    public Set<TypedIdentity> eventReferences() {
-        return Collections.unmodifiableSet(eventReferences);
-    }
 }

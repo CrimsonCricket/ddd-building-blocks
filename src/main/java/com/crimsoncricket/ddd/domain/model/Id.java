@@ -16,7 +16,6 @@
 
 package com.crimsoncricket.ddd.domain.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
@@ -41,14 +40,6 @@ public abstract class Id implements Serializable {
 		this.id = id;
 	}
 
-	public TypedIdentity asTypedIdentity() {
-		return new TypedIdentity(this.getClass(), this.id);
-	}
-
-	public String id() {
-		return this.id;
-	}
-
 	@Override
 	public String toString() {
 		return id;
@@ -60,6 +51,10 @@ public abstract class Id implements Serializable {
 		if (!(o instanceof Id)) return false;
 		Id id1 = (Id) o;
 		return Objects.equals(id(), id1.id());
+	}
+
+	public String id() {
+		return this.id;
 	}
 
 	@Override

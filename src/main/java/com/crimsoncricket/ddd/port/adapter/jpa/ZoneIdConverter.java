@@ -23,20 +23,19 @@ import java.time.ZoneId;
 @Converter(autoApply = true)
 public class ZoneIdConverter implements AttributeConverter<ZoneId, String> {
 
+	@Override
+	public String convertToDatabaseColumn(ZoneId attribute) {
+		if (attribute == null)
+			return null;
 
-    @Override
-    public String convertToDatabaseColumn(ZoneId attribute) {
-        if (attribute == null)
-            return null;
+		return attribute.getId();
+	}
 
-        return attribute.getId();
-    }
+	@Override
+	public ZoneId convertToEntityAttribute(String dbData) {
+		if (dbData == null)
+			return null;
 
-    @Override
-    public ZoneId convertToEntityAttribute(String dbData) {
-        if (dbData == null)
-            return null;
-
-        return ZoneId.of(dbData);
-    }
+		return ZoneId.of(dbData);
+	}
 }

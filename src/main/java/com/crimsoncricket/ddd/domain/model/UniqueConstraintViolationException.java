@@ -18,14 +18,14 @@ package com.crimsoncricket.ddd.domain.model;
 
 public class UniqueConstraintViolationException extends Exception {
 
-    private AggregateRoot conflictingEntity;
+	private AggregateRoot conflictingEntity;
 
-    public UniqueConstraintViolationException(String message, AggregateRoot conflictingEntity) {
-        super(message);
-        this.conflictingEntity = conflictingEntity;
-    }
+	public UniqueConstraintViolationException(String message, AggregateRoot conflictingEntity) {
+		super(message);
+		this.conflictingEntity = conflictingEntity;
+	}
 
-    public AggregateRoot conflictingEntity() {
-        return conflictingEntity;
-    }
+	public AggregateRoot conflictingEntity() {
+		return conflictingEntity;
+	}
 }

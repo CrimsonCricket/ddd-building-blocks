@@ -23,8 +23,8 @@ import java.util.Optional;
 
 public class EventInitiatorResolverDisabled implements EventInitiatorResolver {
 
-    @Override
-    public Optional<TypedIdentity> intiatorOf(DomainEvent domainEvent) {
-        return Optional.empty();
-    }
+	@Override
+	public Optional<TypedIdentity> initiatorOf(DomainEvent domainEvent) {
+		return Optional.empty();
+	}
 }

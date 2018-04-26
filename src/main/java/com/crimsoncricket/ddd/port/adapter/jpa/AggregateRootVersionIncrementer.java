@@ -23,15 +23,14 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 
 public class AggregateRootVersionIncrementer implements
-        com.crimsoncricket.ddd.application.AggregateRootVersionIncrementer {
+		com.crimsoncricket.ddd.application.AggregateRootVersionIncrementer {
 
+	@PersistenceContext
+	private EntityManager entityManager;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	@Override
+	public void ensureAggregateRootVersionWillBeIncremented(AggregateRoot aggregateRoot) {
+		entityManager.lock(aggregateRoot, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
-    @Override
-    public void ensureAggregateRootVersionWillBeIncremented(AggregateRoot aggregateRoot) {
-        entityManager.lock(aggregateRoot, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-
-    }
+	}
 }

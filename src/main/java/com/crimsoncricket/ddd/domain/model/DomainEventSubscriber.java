@@ -18,22 +18,21 @@ package com.crimsoncricket.ddd.domain.model;
 
 import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
-public abstract class DomainEventSubscriber<T extends  DomainEvent> {
+public abstract class DomainEventSubscriber<T extends DomainEvent> {
 
-    private Class<T> eventType;
+	private Class<T> eventType;
 
-    protected DomainEventSubscriber(Class<T> eventType) {
-        this.eventType = eventType;
-    }
+	protected DomainEventSubscriber(Class<T> eventType) {
+		this.eventType = eventType;
+	}
 
-    @SuppressWarnings("unchecked")
-    void notify(DomainEvent anEvent) {
-        assertArgumentNotNull(anEvent, "The domain event may not be null.");
-        if (this.eventType.isAssignableFrom(anEvent.getClass()))
-            this.handleEvent((T) anEvent);
-    }
+	@SuppressWarnings("unchecked")
+	void notify(DomainEvent anEvent) {
+		assertArgumentNotNull(anEvent, "The domain event may not be null.");
+		if (this.eventType.isAssignableFrom(anEvent.getClass()))
+			this.handleEvent((T) anEvent);
+	}
 
-    protected abstract void handleEvent(T aDomainEvent);
-
+	protected abstract void handleEvent(T aDomainEvent);
 
 }

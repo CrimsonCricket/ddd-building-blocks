@@ -18,9 +18,8 @@ package com.crimsoncricket.ddd.application;
 
 public interface EventSerializer {
 
-    String serialize(Object anEvent);
+	String serialize(Object anEvent);
 
-    <T> T unserialize(String serializedEvent, Class<T> eventClass);
-
+	<T> T unserialize(String serializedEvent, Class<T> eventClass);
 
 }

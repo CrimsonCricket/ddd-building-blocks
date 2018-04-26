@@ -18,22 +18,22 @@ package com.crimsoncricket.ddd.domain.model;
 
 public class OutdatedEntityVersionException extends Exception {
 
-    private int expectedVersion;
+	private int expectedVersion;
 
-    private int actualVersion;
+	private int actualVersion;
 
-    public OutdatedEntityVersionException(String message, int expectedVersion, int actualVersion) {
-        super(message);
-        this.expectedVersion = expectedVersion;
-        this.actualVersion = actualVersion;
-    }
+	public OutdatedEntityVersionException(String message, int expectedVersion, int actualVersion) {
+		super(message);
+		this.expectedVersion = expectedVersion;
+		this.actualVersion = actualVersion;
+	}
 
-    public int expectedVersion() {
-        return expectedVersion;
-    }
+	public int expectedVersion() {
+		return expectedVersion;
+	}
 
-    public int actualVersion() {
-        return actualVersion;
-    }
+	public int actualVersion() {
+		return actualVersion;
+	}
 
 }

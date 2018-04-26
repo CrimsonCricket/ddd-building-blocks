@@ -29,41 +29,38 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 @MappedSuperclass
 public abstract class Entity<I extends Id> {
 
-    @SuppressWarnings("JpaModelReferenceInspection")
-    @EmbeddedId
-    @DocumentId
-    @FieldBridge(impl = IdBridge.class)
-    @AttributeOverrides({
-        @AttributeOverride(name = "id", column = @Column(name = "id"))
-    })
-    private I id;
+	@SuppressWarnings("JpaModelReferenceInspection")
+	@EmbeddedId
+	@DocumentId
+	@FieldBridge(impl = IdBridge.class)
+	@AttributeOverrides({
+			@AttributeOverride(name = "id", column = @Column(name = "id"))
+	})
+	private I id;
 
-    protected Entity(){};
+	protected Entity() {
+	}
 
-    protected Entity(I id) {
-        assertArgumentNotNull(id, "Id may not be null");
-        this.id = id;
-    }
+	protected Entity(I id) {
+		assertArgumentNotNull(id, "Id may not be null");
+		this.id = id;
+	}
 
+	public I id() {
+		return id;
+	}
 
-    public I id() {
-        return id;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Entity)) return false;
+		Entity<?> entity = (Entity<?>) o;
+		return Objects.equals(id, entity.id);
+	}
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Entity)) return false;
-        Entity<?> entity = (Entity<?>) o;
-        return Objects.equals(id, entity.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 
 }

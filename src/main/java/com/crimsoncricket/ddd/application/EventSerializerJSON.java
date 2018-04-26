@@ -30,38 +30,38 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class EventSerializerJSON implements EventSerializer {
 
-    private Gson gson;
+	private Gson gson;
 
-    public EventSerializerJSON() {
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(ZoneId.class, new TypeAdapter<ZoneId>() {
-                    @Override
-                    public void write(JsonWriter out, ZoneId value) throws IOException {
-                        out.value(value == null ? null : value.getId());
-                    }
-                    @Override
-                    public ZoneId read(JsonReader in) throws IOException {
-                        if (in.peek() == JsonToken.NULL) {
-                            in.nextNull();
-                            return null;
-                        } else {
-                            return ZoneId.of(in.nextString());
-                        }
-                    }
-                })
-                .create();
-    }
+	public EventSerializerJSON() {
+		this.gson = new GsonBuilder()
+				.registerTypeAdapter(ZoneId.class, new TypeAdapter<ZoneId>() {
+					@Override
+					public void write(JsonWriter out, ZoneId value) throws IOException {
+						out.value(value == null ? null : value.getId());
+					}
 
-    @Override
-    public String serialize(Object anEvent) {
-        assertArgumentNotNull(anEvent, "The domain event may not be null.");
-        return gson.toJson(anEvent);
-    }
+					@Override
+					public ZoneId read(JsonReader in) throws IOException {
+						if (in.peek() == JsonToken.NULL) {
+							in.nextNull();
+							return null;
+						} else {
+							return ZoneId.of(in.nextString());
+						}
+					}
+				})
+				.create();
+	}
 
-    @Override
-    public <T> T unserialize(String serializedEvent, Class<T> eventClass) {
-        return gson.fromJson(serializedEvent, eventClass);
-    }
+	@Override
+	public String serialize(Object anEvent) {
+		assertArgumentNotNull(anEvent, "The domain event may not be null.");
+		return gson.toJson(anEvent);
+	}
 
+	@Override
+	public <T> T unserialize(String serializedEvent, Class<T> eventClass) {
+		return gson.fromJson(serializedEvent, eventClass);
+	}
 
 }

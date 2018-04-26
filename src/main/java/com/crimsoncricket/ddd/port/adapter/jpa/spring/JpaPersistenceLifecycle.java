@@ -33,65 +33,68 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
 
-    private static final Logger logger = LoggerFactory.getLogger(JpaPersistenceLifecycle.class);
+	private static final Logger logger = LoggerFactory.getLogger(JpaPersistenceLifecycle.class);
 
-    private final JpaTransactionManager transactionManager;
-    private final ThreadLocal<TransactionStatus> transactionStatusHolder = new ThreadLocal<TransactionStatus>();
+	private final JpaTransactionManager transactionManager;
 
-    private final EntityManagerFactory entityManagerFactory;
+	private final ThreadLocal<TransactionStatus> transactionStatusHolder = new ThreadLocal<TransactionStatus>();
 
-    public JpaPersistenceLifecycle(
-            JpaTransactionManager transactionManager,
-            EntityManagerFactory entityManagerFactory
-    ) {
-        assertArgumentNotNull(transactionManager, "The transaction manager may not be null.");
-        assertArgumentNotNull(entityManagerFactory, "The entity manager factory may not be null");
-        this.transactionManager = transactionManager;
-        this.entityManagerFactory = entityManagerFactory;
-    }
+	private final EntityManagerFactory entityManagerFactory;
 
-    @Override
-    public void begin() {
-        logger.debug("Starting JPA transaction");
-        try {
-            DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-            definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-            definition.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
-            TransactionStatus transactionStatus = transactionManager.getTransaction(definition);
-            transactionStatusHolder.set(transactionStatus);
-            logger.debug("Started JPA transaction");
-        } catch(Exception e) {
-            logger.error("Error starting JPA transaction", e);
-            throw new RuntimeException(e);
-        }
-    }
+	public JpaPersistenceLifecycle(
+			JpaTransactionManager transactionManager,
+			EntityManagerFactory entityManagerFactory
+	) {
+		assertArgumentNotNull(transactionManager, "The transaction manager may not be null.");
+		assertArgumentNotNull(entityManagerFactory, "The entity manager factory may not be null");
+		this.transactionManager = transactionManager;
+		this.entityManagerFactory = entityManagerFactory;
+	}
 
-    @Override
-    public void commit() {
-        transactionManager.commit(transactionStatusHolder.get());
-        logger.debug("Committed JPA transaction");
-    }
+	@Override
+	public void begin() {
+		logger.debug("Starting JPA transaction");
+		try {
+			DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+			definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+			definition.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+			TransactionStatus transactionStatus = transactionManager.getTransaction(definition);
+			transactionStatusHolder.set(transactionStatus);
+			logger.debug("Started JPA transaction");
+		} catch (Exception e) {
+			logger.error("Error starting JPA transaction", e);
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    public void rollback() {
-	    TransactionStatus transactionStatus = transactionStatusHolder.get();
-	    if (transactionStatus.isCompleted()) {
-	    	logger.debug("Skipping rollback of transaction. Transaction is already completed. " +
-				    "Presumably, a rollback already occurred" +
-				    "as a result of a runtime exception during transaction commit");
-	    	return;
-	    }
-	    transactionManager.rollback(transactionStatus);
-        logger.debug("Rolled back transaction");
-    }
+	@Override
+	public void commit() {
+		transactionManager.commit(transactionStatusHolder.get());
+		logger.debug("Committed JPA transaction");
+	}
 
-    @Override
-    public void flush() {
-        EntityManagerHolder entityManagerHolder =
-                (EntityManagerHolder) TransactionSynchronizationManager.getResource(entityManagerFactory);
-        EntityManager entityManager = entityManagerHolder.getEntityManager();
-        entityManager.flush();
-    }
+	@Override
+	public void rollback() {
+		TransactionStatus transactionStatus = transactionStatusHolder.get();
+		if (transactionStatus.isCompleted()) {
+			logger.debug("Skipping rollback of transaction. Transaction is already completed. " +
+					"Presumably, a rollback already occurred" +
+					"as a result of a runtime exception during transaction commit");
+			return;
+		}
+		transactionManager.rollback(transactionStatus);
+		logger.debug("Rolled back transaction");
+	}
 
+	@Override
+	public void flush() {
+		entityManager().flush();
+	}
+
+	private EntityManager entityManager() {
+		EntityManagerHolder entityManagerHolder =
+				(EntityManagerHolder) TransactionSynchronizationManager.getResource(entityManagerFactory);
+		return entityManagerHolder.getEntityManager();
+	}
 
 }

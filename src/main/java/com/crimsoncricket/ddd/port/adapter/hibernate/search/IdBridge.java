@@ -17,42 +17,40 @@
 package com.crimsoncricket.ddd.port.adapter.hibernate.search;
 
 import com.crimsoncricket.ddd.domain.model.Id;
-
 import org.apache.lucene.document.Document;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.TwoWayFieldBridge;
 
-
 public class IdBridge implements TwoWayFieldBridge {
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object get(String name, Document document) {
-        String stringValue = document.get(name);
-        String className = document.get(classFieldName(name));
-        Class idClass = null;
-        try {
-            idClass = Class.forName(className);
-            return idClass.getConstructor(String.class).newInstance(stringValue);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object get(String name, Document document) {
+		String stringValue = document.get(name);
+		String className = document.get(classFieldName(name));
+		Class idClass = null;
+		try {
+			idClass = Class.forName(className);
+			return idClass.getConstructor(String.class).newInstance(stringValue);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    public String objectToString(Object object) {
-        return ((Id) object).id();
-    }
+	private String classFieldName(String name) {
+		return "__" + name + "_class";
+	}
 
-    @Override
-    public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        String stringValue = objectToString(value);
-        String className = value.getClass().getName();
-        luceneOptions.addFieldToDocument(name, stringValue, document);
-        luceneOptions.addFieldToDocument(classFieldName(name), className, document);
-    }
+	@Override
+	public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
+		String stringValue = objectToString(value);
+		String className = value.getClass().getName();
+		luceneOptions.addFieldToDocument(name, stringValue, document);
+		luceneOptions.addFieldToDocument(classFieldName(name), className, document);
+	}
 
-    private String classFieldName(String name) {
-        return "__" + name + "_class";
-    }
+	@Override
+	public String objectToString(Object object) {
+		return ((Id) object).id();
+	}
 }

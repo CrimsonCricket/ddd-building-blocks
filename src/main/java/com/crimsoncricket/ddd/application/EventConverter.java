@@ -19,6 +19,6 @@ package com.crimsoncricket.ddd.application;
 
 public interface EventConverter {
 
-	SequencedEvent converted(SequencedEvent sequencedEvent);
+	EventMessage converted(EventMessage sequencedEvent);
 
 }

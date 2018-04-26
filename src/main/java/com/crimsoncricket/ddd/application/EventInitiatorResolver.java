@@ -23,7 +23,6 @@ import java.util.Optional;
 
 public interface EventInitiatorResolver {
 
-
-    Optional<TypedIdentity> intiatorOf(DomainEvent domainEvent);
+	Optional<TypedIdentity> initiatorOf(DomainEvent domainEvent);
 
 }

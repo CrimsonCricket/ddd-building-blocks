@@ -23,39 +23,38 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class DomainEventPublisher {
 
-    private static final ThreadLocal<DomainEventPublisher> instance = new ThreadLocal<DomainEventPublisher>(){
-        @Override
-        protected DomainEventPublisher initialValue() {
-            return new DomainEventPublisher();
-        }
-    };
+	private static final ThreadLocal<DomainEventPublisher> instance = new ThreadLocal<DomainEventPublisher>() {
+		@Override
+		protected DomainEventPublisher initialValue() {
+			return new DomainEventPublisher();
+		}
+	};
 
-    private List<DomainEventSubscriber> subscribers;
+	public static DomainEventPublisher instance() {
+		return instance.get();
+	}
 
+	private List<DomainEventSubscriber> subscribers;
 
-    public static DomainEventPublisher instance() {
-        return instance.get();
-    }
+	public DomainEventPublisher() {
+		newSubscribersList();
+	}
 
-    public DomainEventPublisher() {
-        newSubscribersList();
-    }
+	private void newSubscribersList() {
+		this.subscribers = new ArrayList<>();
+	}
 
-    public void publish(final DomainEvent anEvent) {
-        assertArgumentNotNull(anEvent, "The domain event may not be null.");
-        this.subscribers.forEach(subscriber -> subscriber.notify(anEvent));
-    }
+	public void publish(final DomainEvent anEvent) {
+		assertArgumentNotNull(anEvent, "The domain event may not be null.");
+		this.subscribers.forEach(subscriber -> subscriber.notify(anEvent));
+	}
 
-    public void subscribe(DomainEventSubscriber aSubscriber) {
-        assertArgumentNotNull(aSubscriber, "The domain event subscriber may not be null");
-        this.subscribers.add(aSubscriber);
-    }
+	public void subscribe(DomainEventSubscriber aSubscriber) {
+		assertArgumentNotNull(aSubscriber, "The domain event subscriber may not be null");
+		this.subscribers.add(aSubscriber);
+	}
 
-    public void reset() {
-        newSubscribersList();
-    }
-
-    private void newSubscribersList() {
-        this.subscribers = new ArrayList<>();
-    }
+	public void reset() {
+		newSubscribersList();
+	}
 }

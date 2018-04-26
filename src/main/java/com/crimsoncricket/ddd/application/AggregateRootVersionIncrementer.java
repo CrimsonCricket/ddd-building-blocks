@@ -20,6 +20,6 @@ import com.crimsoncricket.ddd.domain.model.AggregateRoot;
 
 public interface AggregateRootVersionIncrementer {
 
-    void ensureAggregateRootVersionWillBeIncremented(AggregateRoot aggregateRoot);
+	void ensureAggregateRootVersionWillBeIncremented(AggregateRoot aggregateRoot);
 
 }

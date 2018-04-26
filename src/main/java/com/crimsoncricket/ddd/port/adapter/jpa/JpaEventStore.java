@@ -16,55 +16,41 @@
 
 package com.crimsoncricket.ddd.port.adapter.jpa;
 
+import com.crimsoncricket.ddd.application.AbstractEventStore;
 import com.crimsoncricket.ddd.application.EventInitiatorResolver;
 import com.crimsoncricket.ddd.application.EventSerializer;
-import com.crimsoncricket.ddd.application.AbstractEventStore;
 import com.crimsoncricket.ddd.application.StoredEvent;
-
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class JpaEventStore extends AbstractEventStore {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	@PersistenceContext
+	protected EntityManager entityManager;
 
+	public JpaEventStore(
+			EventSerializer eventSerializer,
+			EventInitiatorResolver initiatorResolver) {
+		super(eventSerializer, initiatorResolver);
+	}
 
-    public JpaEventStore(
-            EventSerializer eventSerializer,
-            EventInitiatorResolver initiatorResolver) {
-        super(eventSerializer, initiatorResolver);
-    }
+	@Override
+	protected void store(StoredEvent storedEvent) {
+		entityManager.persist(storedEvent);
+	}
 
-    @Override
-    protected void store(StoredEvent storedEvent) {
-        entityManager.persist(storedEvent);
-    }
-
-    @Override
-    public List<StoredEvent> allEventsAfter(Long eventId) {
-        Query query = entityManager
-                .createQuery("select e from StoredEvent e where e.eventId > :eventId")
-                .setParameter("eventId", eventId);
-
-        List<StoredEvent> eventList = new ArrayList<>();
-        List resultList = query.getResultList();
-        for (Object result : resultList) {
-            if (result instanceof StoredEvent)
-                eventList.add((StoredEvent) result);
-            else
-                throw new RuntimeException("Unexpected result type."); // not gonna happen
-        }
-        return eventList;
-    }
-
-
-
-
-
+	@Override
+	public List<StoredEvent> maxEventsAfter(Long eventId, Long limit) {
+		return entityManager
+				.createQuery(
+						"select e from StoredEvent e where e.eventId > :eventId order by e.eventId",
+						StoredEvent.class
+				)
+				.setParameter("eventId", eventId)
+				.setFirstResult(0)
+				.setMaxResults(limit.intValue())
+				.getResultList();
+	}
 }

@@ -18,21 +18,18 @@ package com.crimsoncricket.ddd.domain.model;
 
 public abstract class UniqueEntityGuard<T extends AggregateRoot> extends DomainService {
 
+	public void ensureNewEntityIsUnique(T newEntity) throws UniqueConstraintViolationException {
+		T conflictingEntity = findEntityConflictingWithNew(newEntity);
+		if (conflictingEntity != null)
+			throwConstraintViolationException(conflictingEntity);
 
-    public void ensureNewEntityIsUnique(T newEntity) throws UniqueConstraintViolationException {
-        T conflictingEntity = findEntityConflictingWithNew(newEntity);
-        if (conflictingEntity != null)
-            throwConstraintViolationException(conflictingEntity);
+	}
 
-    }
+	protected abstract T findEntityConflictingWithNew(T newEntity);
 
-
-    protected abstract T findEntityConflictingWithNew(T newEntity);
-
-    protected void throwConstraintViolationException(T conflictingEntity) throws UniqueConstraintViolationException {
-        throw new UniqueConstraintViolationException(
-                "Cannot create new entity, because it violates a uniqueness constraint", conflictingEntity);
-    }
-
+	protected void throwConstraintViolationException(T conflictingEntity) throws UniqueConstraintViolationException {
+		throw new UniqueConstraintViolationException(
+				"Cannot create new entity, because it violates a uniqueness constraint", conflictingEntity);
+	}
 
 }

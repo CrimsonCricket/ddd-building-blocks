@@ -20,24 +20,22 @@ import java.util.UUID;
 
 public class RepositoryImpl<I extends Id> implements Repository<I> {
 
+	private Class<I> identityClass;
 
-    private Class<I> identityClass;
+	public RepositoryImpl(Class<I> identityClass) {
+		this.identityClass = identityClass;
+	}
 
-    public RepositoryImpl(Class<I> identityClass) {
-        this.identityClass = identityClass;
-    }
-
-    @Override
-    public I nextIdentity() {
-        String uid = UUID.randomUUID().toString();
-        I identity = null;
-        try {
-            identity = identityClass.getConstructor(String.class).newInstance(uid);
-        } catch (Exception e) {
-           throw new RuntimeException(e);
-        }
-        return identity;
-    }
-
+	@Override
+	public I nextIdentity() {
+		String uid = UUID.randomUUID().toString();
+		I identity;
+		try {
+			identity = identityClass.getConstructor(String.class).newInstance(uid);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return identity;
+	}
 
 }

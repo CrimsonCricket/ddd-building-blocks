@@ -22,7 +22,7 @@ import java.util.List;
 
 public interface EventStore {
 
-    void append(DomainEvent anEvent);
+	void append(DomainEvent anEvent);
 
-    List<StoredEvent> allEventsAfter(Long eventId);
+	List<StoredEvent> maxEventsAfter(Long eventId, Long limit);
 }
