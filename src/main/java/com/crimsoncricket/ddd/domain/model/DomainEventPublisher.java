@@ -23,12 +23,8 @@ import static com.crimsoncricket.asserts.Assert.assertArgumentNotNull;
 
 public class DomainEventPublisher {
 
-	private static final ThreadLocal<DomainEventPublisher> instance = new ThreadLocal<DomainEventPublisher>() {
-		@Override
-		protected DomainEventPublisher initialValue() {
-			return new DomainEventPublisher();
-		}
-	};
+	private static final ThreadLocal<DomainEventPublisher> instance =
+			ThreadLocal.withInitial(DomainEventPublisher::new);
 
 	public static DomainEventPublisher instance() {
 		return instance.get();

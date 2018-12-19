@@ -20,7 +20,7 @@ import com.crimsoncricket.ddd.application.PersistenceLifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.EntityManagerHolder;
-import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -35,14 +35,14 @@ public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
 
 	private static final Logger logger = LoggerFactory.getLogger(JpaPersistenceLifecycle.class);
 
-	private final JpaTransactionManager transactionManager;
+	private final PlatformTransactionManager transactionManager;
 
 	private final ThreadLocal<TransactionStatus> transactionStatusHolder = new ThreadLocal<TransactionStatus>();
 
 	private final EntityManagerFactory entityManagerFactory;
 
 	public JpaPersistenceLifecycle(
-			JpaTransactionManager transactionManager,
+			PlatformTransactionManager transactionManager,
 			EntityManagerFactory entityManagerFactory
 	) {
 		assertArgumentNotNull(transactionManager, "The transaction manager may not be null.");
@@ -94,6 +94,7 @@ public class JpaPersistenceLifecycle implements PersistenceLifeCycle {
 	private EntityManager entityManager() {
 		EntityManagerHolder entityManagerHolder =
 				(EntityManagerHolder) TransactionSynchronizationManager.getResource(entityManagerFactory);
+		assert entityManagerHolder != null;
 		return entityManagerHolder.getEntityManager();
 	}
 
