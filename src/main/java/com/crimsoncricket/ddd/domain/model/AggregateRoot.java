@@ -45,4 +45,9 @@ public class AggregateRoot<I extends Id> extends Entity<I> {
 
 	}
 
+	// This method exists for testing purposes only
+	protected void assumeVersion(int version) {
+		this.version = version;
+	}
+
 }
